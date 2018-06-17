@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="config_data_messages">messages</string>
+    <string name="config_data_users">users</string>
+    <string name="config_realm_name">chat.realm</string>
+</resources>
