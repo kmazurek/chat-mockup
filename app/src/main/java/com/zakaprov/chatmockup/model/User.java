@@ -5,6 +5,10 @@ import io.realm.annotations.PrimaryKey;
 
 public class User extends RealmObject {
 
+    public static final String FIELD_ID = "id";
+
+    public static final Long SESSION_USER_ID = 1L;
+
     @PrimaryKey private Long id;
     private String name;
     private String avatarId;
