@@ -1,6 +1,7 @@
 package com.zakaprov.chatmockup.ui
 
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.View
 import com.bumptech.glide.RequestManager
 import com.zakaprov.chatmockup.extensions.getParentMessage
@@ -19,6 +20,8 @@ class AttachmentViewHolder(val view: View, val glideManager: RequestManager) : R
     }
 
     private fun bindSentAttachment(attachment: Attachment) = with(view) {
+        item_attachment_root.gravity = Gravity.END
+
         glideManager.clear(item_attachment_image)
         glideManager
             .load(attachment.url)
@@ -29,6 +32,8 @@ class AttachmentViewHolder(val view: View, val glideManager: RequestManager) : R
     }
 
     private fun bindReceivedAttachment(attachment: Attachment) = with(view) {
+        item_attachment_root.gravity = Gravity.START
+
         glideManager.clear(item_attachment_image)
         glideManager
             .load(attachment.url)

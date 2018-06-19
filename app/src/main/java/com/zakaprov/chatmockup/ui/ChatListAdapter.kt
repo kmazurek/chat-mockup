@@ -53,8 +53,8 @@ class ChatListAdapter(val glideManager: RequestManager)
         val result = mutableListOf<ChatItem>()
 
         messages.forEach {
+            result.addAll(it.attachments.reversed())
             result.add(it)
-            result.addAll(it.attachments)
         }
 
         result

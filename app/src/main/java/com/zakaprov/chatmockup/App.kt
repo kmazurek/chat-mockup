@@ -23,6 +23,7 @@ class App : Application() {
         val config = RealmConfiguration.Builder()
             .name(getString(R.string.config_realm_name))
             .schemaVersion(BuildConfig.realmSchemaVersion)
+            .deleteRealmIfMigrationNeeded()
             .initialData {
                 val gson = Gson()
 

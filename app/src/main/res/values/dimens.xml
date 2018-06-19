@@ -3,8 +3,7 @@
     <dimen name="attachment_image_size">200dp</dimen>
 
     <dimen name="msg_default_corner_radius">6dp</dimen>
-    <dimen name="msg_received_max_width">240dp</dimen>
-    <dimen name="msg_sent_max_width">260dp</dimen>
+    <dimen name="msg_content_max_width">250dp</dimen>
     <dimen name="msg_content_padding">4dp</dimen>
     <dimen name="msg_layout_top_margin">8dp</dimen>
     <dimen name="msg_avatar_image_size">50dp</dimen>

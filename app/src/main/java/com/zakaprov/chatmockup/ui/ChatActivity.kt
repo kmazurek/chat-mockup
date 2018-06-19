@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.zakaprov.chatmockup.R
+import com.zakaprov.chatmockup.R.id.chat_recycler_view
 import com.zakaprov.chatmockup.model.Message
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -23,11 +24,7 @@ class ChatActivity : AppCompatActivity() {
         realm = Realm.getDefaultInstance()
         chatAdapter = ChatListAdapter(Glide.with(this))
 
-        chatLayoutManager = LinearLayoutManager(this)
-        chatLayoutManager.apply {
-            reverseLayout = true
-            stackFromEnd = false
-        }
+        chatLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
 
         chat_recycler_view.apply {
             adapter = chatAdapter
