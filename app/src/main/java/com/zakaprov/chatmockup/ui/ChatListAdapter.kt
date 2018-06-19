@@ -4,16 +4,18 @@ import android.support.v7.recyclerview.extensions.ListAdapter
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import com.zakaprov.chatmockup.R
 import com.zakaprov.chatmockup.extensions.inflate
 import com.zakaprov.chatmockup.model.Attachment
 import com.zakaprov.chatmockup.model.ChatItem
 import com.zakaprov.chatmockup.model.Message
 
-private const val TYPE_MESSAGE = 100
-private const val TYPE_ATTACHMENT = 101
+private const val TYPE_ATTACHMENT = 100
+private const val TYPE_MESSAGE = 101
 
-class ChatListAdapter : ListAdapter<ChatItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class ChatListAdapter(val glideManager: RequestManager)
+    : ListAdapter<ChatItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     private var items: MutableList<ChatItem> = mutableListOf()
 
@@ -24,15 +26,18 @@ class ChatListAdapter : ListAdapter<ChatItem, RecyclerView.ViewHolder>(DIFF_CALL
 
     override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int) = when(items[position]) {
-        is Message -> TYPE_MESSAGE
-        is Attachment -> TYPE_ATTACHMENT
-        else -> throw IllegalArgumentException()
+    override fun getItemViewType(position: Int) = with(items[position]) {
+        when(this) {
+            is Message -> TYPE_MESSAGE
+            is Attachment -> TYPE_ATTACHMENT
+            else -> throw IllegalArgumentException()
+        }
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when(viewType) {
-        TYPE_MESSAGE -> MessageViewHolder(R.layout.item_message.inflate(parent))
-        TYPE_ATTACHMENT -> AttachmentViewHolder(R.layout.item_attachment.inflate(parent))
+        TYPE_MESSAGE -> MessageViewHolder(R.layout.item_message.inflate(parent), glideManager)
+        TYPE_ATTACHMENT -> AttachmentViewHolder(R.layout.item_attachment.inflate(parent), glideManager)
         else -> throw IllegalArgumentException()
     }
 

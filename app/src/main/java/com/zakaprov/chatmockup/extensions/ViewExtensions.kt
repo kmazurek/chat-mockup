@@ -6,3 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 
 fun @receiver:LayoutRes Int.inflate(parent: ViewGroup): View = LayoutInflater.from(parent.context).inflate(this, parent, false)
+
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}

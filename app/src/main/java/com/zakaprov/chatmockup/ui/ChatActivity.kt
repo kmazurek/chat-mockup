@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.zakaprov.chatmockup.R
 import com.zakaprov.chatmockup.model.Message
 import io.realm.Realm
@@ -20,7 +21,7 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
 
         realm = Realm.getDefaultInstance()
-        chatAdapter = ChatListAdapter()
+        chatAdapter = ChatListAdapter(Glide.with(this))
 
         chatLayoutManager = LinearLayoutManager(this)
         chatLayoutManager.apply {
