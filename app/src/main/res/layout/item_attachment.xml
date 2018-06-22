@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_gravity="top"
-            app:cardCornerRadius="@dimen/msg_default_corner_radius">
+            app:cardCornerRadius="@dimen/msg_default_corner_radius"
+            app:cardUseCompatPadding="true">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                     android:id="@+id/item_attachment_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"/>
+                    android:padding="@dimen/msg_content_padding"/>
 
         </LinearLayout>
 

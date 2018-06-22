@@ -10,6 +10,7 @@ import com.zakaprov.chatmockup.extensions.inflate
 import com.zakaprov.chatmockup.model.Attachment
 import com.zakaprov.chatmockup.model.ChatItem
 import com.zakaprov.chatmockup.model.Message
+import java.util.UUID
 
 private const val TYPE_ATTACHMENT = 100
 private const val TYPE_MESSAGE = 101
@@ -17,11 +18,21 @@ private const val TYPE_MESSAGE = 101
 class ChatListAdapter(val glideManager: RequestManager)
     : ListAdapter<ChatItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
+    init { setHasStableIds(true) }
+
     private var items: MutableList<ChatItem> = mutableListOf()
 
     fun addMessages(messages: Iterable<Message>) {
         items.addAll(mapMessages(messages))
         notifyDataSetChanged()
+    }
+
+    override fun getItemId(position: Int): Long = with(items[position]) {
+        when(this) {
+            is Message -> id
+            is Attachment -> UUID.fromString(id).mostSignificantBits and Long.MAX_VALUE
+            else -> throw IllegalArgumentException()
+        }
     }
 
     override fun getItemCount() = items.size
