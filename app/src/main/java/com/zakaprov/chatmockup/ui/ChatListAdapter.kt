@@ -15,19 +15,17 @@ import java.util.UUID
 private const val TYPE_ATTACHMENT = 100
 private const val TYPE_MESSAGE = 101
 
-class ChatListAdapter(val glideManager: RequestManager)
-    : ListAdapter<ChatItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class ChatListAdapter(
+    val glideManager: RequestManager,
+    val msgListener: (Long) -> Unit,
+    val attListener: (String) -> Unit
+) : ListAdapter<ChatItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     init { setHasStableIds(true) }
 
-    private var items: MutableList<ChatItem> = mutableListOf()
+    fun updateMessages(messages: Iterable<Message>) = submitList(mapMessages(messages))
 
-    fun addMessages(messages: Iterable<Message>) {
-        items.addAll(mapMessages(messages))
-        notifyDataSetChanged()
-    }
-
-    override fun getItemId(position: Int): Long = with(items[position]) {
+    override fun getItemId(position: Int): Long = with(getItem(position)) {
         when(this) {
             is Message -> id
             is Attachment -> UUID.fromString(id).mostSignificantBits and Long.MAX_VALUE
@@ -35,9 +33,7 @@ class ChatListAdapter(val glideManager: RequestManager)
         }
     }
 
-    override fun getItemCount() = items.size
-
-    override fun getItemViewType(position: Int) = with(items[position]) {
+    override fun getItemViewType(position: Int) = with(getItem(position)) {
         when(this) {
             is Message -> TYPE_MESSAGE
             is Attachment -> TYPE_ATTACHMENT
@@ -52,10 +48,10 @@ class ChatListAdapter(val glideManager: RequestManager)
         else -> throw IllegalArgumentException()
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = with(items[position]) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = with(getItem(position)) {
         when(holder) {
-            is MessageViewHolder -> holder.bind(this as Message)
-            is AttachmentViewHolder -> holder.bind(this as Attachment)
+            is MessageViewHolder -> holder.bind(this as Message, msgListener)
+            is AttachmentViewHolder -> holder.bind(this as Attachment, attListener)
             else -> throw IllegalArgumentException()
         }
     }
@@ -63,10 +59,8 @@ class ChatListAdapter(val glideManager: RequestManager)
     private fun mapMessages(messages: Iterable<Message>) = messages.flatMap {
         val result = mutableListOf<ChatItem>()
 
-        messages.forEach {
-            result.addAll(it.attachments.reversed())
-            result.add(it)
-        }
+        result.addAll(it.attachments.reversed())
+        result.add(it)
 
         result
     }

@@ -15,11 +15,16 @@ import kotlinx.android.synthetic.main.item_message.view.*
 
 class MessageViewHolder(val view: View, val glideManager: RequestManager) : RecyclerView.ViewHolder(view) {
 
-    fun bind(message: Message) {
+    fun bind(message: Message, listener: (id: Long) -> Unit) {
         if (message.userId == User.SESSION_USER_ID) {
             bindSentMessage(message)
         } else {
             bindReceivedMessage(message)
+        }
+
+        view.setOnLongClickListener {
+            listener.invoke(message.id)
+            true
         }
     }
 

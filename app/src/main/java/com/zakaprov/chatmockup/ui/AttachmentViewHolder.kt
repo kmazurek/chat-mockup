@@ -5,9 +5,6 @@ import android.view.Gravity
 import android.view.View
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
-import com.zakaprov.chatmockup.R.id.item_attachment_image
-import com.zakaprov.chatmockup.R.id.item_attachment_root
-import com.zakaprov.chatmockup.R.id.item_attachment_title
 import com.zakaprov.chatmockup.extensions.getParentMessage
 import com.zakaprov.chatmockup.model.Attachment
 import com.zakaprov.chatmockup.model.User
@@ -15,7 +12,7 @@ import kotlinx.android.synthetic.main.item_attachment.view.*
 
 class AttachmentViewHolder(val view: View, val glideManager: RequestManager) : RecyclerView.ViewHolder(view) {
 
-    fun bind(attachment: Attachment) = with(view) {
+    fun bind(attachment: Attachment, listener: (String) -> Unit) = with(view) {
         if (attachment.getParentMessage()?.userId == User.SESSION_USER_ID) {
             item_attachment_root.gravity = Gravity.END
         } else {
@@ -28,7 +25,11 @@ class AttachmentViewHolder(val view: View, val glideManager: RequestManager) : R
             .apply(RequestOptions.fitCenterTransform())
             .into(item_attachment_image)
 
-
         item_attachment_title.text = attachment.title
+
+        view.setOnLongClickListener {
+            listener.invoke(attachment.id)
+            true
+        }
     }
 }

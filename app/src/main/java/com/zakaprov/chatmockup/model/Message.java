@@ -6,8 +6,6 @@ import io.realm.annotations.PrimaryKey;
 
 public class Message extends RealmObject implements ChatItem {
 
-    public static final String FIELD_ID = "id";
-
     @PrimaryKey private Long id;
     private Long userId;
     private String content;

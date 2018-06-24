@@ -1,28 +1,31 @@
 package com.zakaprov.chatmockup.ui
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.zakaprov.chatmockup.R
-import com.zakaprov.chatmockup.R.id.chat_recycler_view
-import com.zakaprov.chatmockup.model.Message
-import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_chat.*
 
 class ChatActivity : AppCompatActivity() {
 
     private lateinit var chatAdapter: ChatListAdapter
     private lateinit var chatLayoutManager: LinearLayoutManager
-    private lateinit var realm: Realm
+    private lateinit var viewModel: ChatViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        realm = Realm.getDefaultInstance()
-        chatAdapter = ChatListAdapter(Glide.with(this))
+        viewModel = ViewModelProviders.of(this).get(ChatViewModel::class.java)
+
+        chatAdapter = ChatListAdapter(Glide.with(this), {
+            viewModel.deleteMessage(it)
+        }, {
+            viewModel.deleteAttachment(it)
+        })
 
         chatLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
 
@@ -31,6 +34,9 @@ class ChatActivity : AppCompatActivity() {
             layoutManager = chatLayoutManager
         }
 
-        chatAdapter.addMessages(realm.where(Message::class.java).findAll())
+        viewModel.getMessages().observe(this, Observer {
+            it ?: return@Observer
+            chatAdapter.updateMessages(it)
+        })
     }
 }
