@@ -1,4 +1,4 @@
-package com.zakaprov.chatmockup.ui
+package com.zakaprov.chatmockup.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
