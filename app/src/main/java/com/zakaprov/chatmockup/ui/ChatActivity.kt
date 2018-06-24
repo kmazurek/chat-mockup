@@ -57,7 +57,7 @@ class ChatActivity : AppCompatActivity() {
         viewModel.getMessages().observe(this, Observer {
             it ?: return@Observer
             chatAdapter.updateMessages(it)
-            isDataLoading = false
+            chat_recycler_view.postDelayed({ isDataLoading = false }, 200L) // Delay to avoid more than one page from loading at once
         })
     }
 }
