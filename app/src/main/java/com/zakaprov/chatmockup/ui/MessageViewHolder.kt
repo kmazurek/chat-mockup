@@ -13,9 +13,12 @@ import com.zakaprov.chatmockup.model.Message
 import com.zakaprov.chatmockup.model.User
 import kotlinx.android.synthetic.main.item_message.view.*
 
-class MessageViewHolder(val view: View, val glideManager: RequestManager) : RecyclerView.ViewHolder(view) {
+class MessageViewHolder(
+    private val view: View,
+    private val glideManager: RequestManager
+) : RecyclerView.ViewHolder(view) {
 
-    fun bind(message: Message, listener: (id: Long) -> Unit) {
+    fun bind(message: Message, longClickListener: (id: Long) -> Unit) {
         if (message.userId == User.SESSION_USER_ID) {
             bindSentMessage(message)
         } else {
@@ -23,7 +26,7 @@ class MessageViewHolder(val view: View, val glideManager: RequestManager) : Recy
         }
 
         view.setOnLongClickListener {
-            listener.invoke(message.id)
+            longClickListener.invoke(message.id)
             true
         }
     }

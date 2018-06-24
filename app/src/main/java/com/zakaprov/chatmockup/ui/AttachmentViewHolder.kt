@@ -10,9 +10,12 @@ import com.zakaprov.chatmockup.model.Attachment
 import com.zakaprov.chatmockup.model.User
 import kotlinx.android.synthetic.main.item_attachment.view.*
 
-class AttachmentViewHolder(val view: View, val glideManager: RequestManager) : RecyclerView.ViewHolder(view) {
+class AttachmentViewHolder(
+    private val view: View,
+    private val glideManager: RequestManager
+) : RecyclerView.ViewHolder(view) {
 
-    fun bind(attachment: Attachment, listener: (String) -> Unit) = with(view) {
+    fun bind(attachment: Attachment, longClickListener: (String) -> Unit) = with(view) {
         if (attachment.getParentMessage()?.userId == User.SESSION_USER_ID) {
             item_attachment_root.gravity = Gravity.END
         } else {
@@ -28,7 +31,7 @@ class AttachmentViewHolder(val view: View, val glideManager: RequestManager) : R
         item_attachment_title.text = attachment.title
 
         view.setOnLongClickListener {
-            listener.invoke(attachment.id)
+            longClickListener.invoke(attachment.id)
             true
         }
     }

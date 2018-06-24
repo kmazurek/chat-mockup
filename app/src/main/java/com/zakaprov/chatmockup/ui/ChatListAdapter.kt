@@ -16,9 +16,9 @@ private const val TYPE_ATTACHMENT = 100
 private const val TYPE_MESSAGE = 101
 
 class ChatListAdapter(
-    val glideManager: RequestManager,
-    val msgListener: (Long) -> Unit,
-    val attListener: (String) -> Unit
+    private val glideManager: RequestManager,
+    private val messageLongClickListener: (Long) -> Unit,
+    private val attachmentLongClickListener: (String) -> Unit
 ) : ListAdapter<ChatItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     init { setHasStableIds(true) }
@@ -41,7 +41,6 @@ class ChatListAdapter(
         }
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when(viewType) {
         TYPE_MESSAGE -> MessageViewHolder(R.layout.item_message.inflate(parent), glideManager)
         TYPE_ATTACHMENT -> AttachmentViewHolder(R.layout.item_attachment.inflate(parent), glideManager)
@@ -50,8 +49,8 @@ class ChatListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) = with(getItem(position)) {
         when(holder) {
-            is MessageViewHolder -> holder.bind(this as Message, msgListener)
-            is AttachmentViewHolder -> holder.bind(this as Attachment, attListener)
+            is MessageViewHolder -> holder.bind(this as Message, messageLongClickListener)
+            is AttachmentViewHolder -> holder.bind(this as Attachment, attachmentLongClickListener)
             else -> throw IllegalArgumentException()
         }
     }

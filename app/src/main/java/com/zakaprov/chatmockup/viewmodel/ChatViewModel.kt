@@ -22,7 +22,10 @@ class ChatViewModel : ViewModel() {
     }
 
     private val messages: MutableLiveData<List<Message>> = MutableLiveData()
+
     private var pagesLoaded = 0
+    private val loadedItemsCount: Int
+        get() = pagesLoaded * PAGE_SIZE
 
     fun deleteAttachment(id: String) = realm.apply { deleteFromRealm(queryById(id, Attachment::class.java)) }
 
@@ -33,12 +36,17 @@ class ChatViewModel : ViewModel() {
             loadNextPage()
 
             results.addChangeListener({ updatedResults ->
-                messages.postValue(realm.copyFromRealm(updatedResults.take(pagesLoaded * PAGE_SIZE)))
+                messages.postValue(realm.copyFromRealm(updatedResults.take(loadedItemsCount)))
             })
         }
 
         return messages
     }
 
-    fun loadNextPage() = messages.postValue(realm.copyFromRealm(results.take(++pagesLoaded * PAGE_SIZE)))
+    fun loadNextPage() {
+        if (loadedItemsCount < results.size) {
+            pagesLoaded++
+            messages.postValue(realm.copyFromRealm(results.take(loadedItemsCount)))
+        }
+    }
 }

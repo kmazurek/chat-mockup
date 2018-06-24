@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zakaprov.chatmockup.R
 import com.zakaprov.chatmockup.viewmodel.ChatViewModel
@@ -16,17 +17,19 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var chatLayoutManager: LinearLayoutManager
     private lateinit var viewModel: ChatViewModel
 
+    private var isDataLoading = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
         viewModel = ViewModelProviders.of(this).get(ChatViewModel::class.java)
 
-        chatAdapter = ChatListAdapter(Glide.with(this), {
-            viewModel.deleteMessage(it)
-        }, {
-            viewModel.deleteAttachment(it)
-        })
+        chatAdapter = ChatListAdapter(
+            Glide.with(this),
+            { viewModel.deleteMessage(it) },
+            { viewModel.deleteAttachment(it) }
+        )
 
         chatLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
 
@@ -35,9 +38,26 @@ class ChatActivity : AppCompatActivity() {
             layoutManager = chatLayoutManager
         }
 
+        chat_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                chatLayoutManager.apply {
+                    if (dy < 0 && !isDataLoading) {
+                        val firstVisiblePosition = findFirstVisibleItemPosition()
+                        val visibleItemsCount = childCount
+
+                        if (firstVisiblePosition + visibleItemsCount >= itemCount) {
+                            isDataLoading = true
+                            viewModel.loadNextPage()
+                        }
+                    }
+                }
+            }
+        })
+
         viewModel.getMessages().observe(this, Observer {
             it ?: return@Observer
             chatAdapter.updateMessages(it)
+            isDataLoading = false
         })
     }
 }
